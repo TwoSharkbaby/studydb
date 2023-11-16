@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mono.studydb.dao.MusicDao">
+
+    <resultMap id="selectAlbumAssoMapping" type="Album">
+        <id column="album_id" property="albumId" jdbcType="VARCHAR"/>
+        <result column="album_seq" property="albumSeq" jdbcType="INTEGER"/>
+        <result column="album_title" property="albumTitle" jdbcType="VARCHAR"/>
+        <result column="open_date" property="openDate" jdbcType="VARCHAR"/>
+        <association property="artist" javaType="Artist">
+            <id column="mst_id" property="mstId" jdbcType="VARCHAR"/>
+            <result column="mst_name" property="mstName" jdbcType="VARCHAR"/>
+            <result column="debut_date" property="debutDate" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <select id="selectAlbumAsso" parameterType="String" resultMap="selectAlbumAssoMapping">
+        <![CDATA[
+        select a.mst_id mst_id
+            , a.mst_name mst_name
+            , a.debut_date debut_date
+            , b.album_id album_id
+            , b.album_seq album_seq
+            , b.album_title album_title
+            , b.open_date open_date
+        from artist a, album b
+        where a.mst_id = b.mst_id
+        and b.mst_id = #{mstId}
+        ]]>
+    </select>
+
+    <resultMap id="selectArtistColMapping" type="Artist">
+        <id column="mst_id" property="mstId" jdbcType="VARCHAR"/>
+        <result column="mst_name" property="mstName" jdbcType="VARCHAR"/>
+        <result column="debut_date" property="debutDate" jdbcType="VARCHAR"/>
+        <collection property="album" javaType="List" ofType="Album">
+            <id column="album_id" property="albumId" jdbcType="VARCHAR"/>
+            <result column="album_seq" property="albumSeq" jdbcType="INTEGER"/>
+            <result column="album_title" property="albumTitle" jdbcType="VARCHAR"/>
+            <result column="open_date" property="openDate" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectArtistColl" parameterType="String" resultMap="selectArtistColMapping">
+        <![CDATA[
+        select a.mst_id mst_id
+            , a.mst_name mst_name
+            , a.debut_date debut_date
+            , b.album_id album_id
+            , b.album_seq album_seq
+            , b.album_title album_title
+            , b.open_date open_date
+        from artist a, album b
+        where a.mst_id = b.mst_id
+        and b.mst_id = #{mstId}
+        ]]>
+    </select>
+
+
+</mapper>

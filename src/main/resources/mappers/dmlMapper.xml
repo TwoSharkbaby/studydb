@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mono.studydb.dao.DmlDao">
+
+    <insert id="insertOne" parameterType="map">
+        <![CDATA[
+			insert into JDU_EXAM_RSLT(name, class, kor, eng, mat, grade)
+			values(
+                #{name, jdbcType=VARCHAR},
+                #{class, jdbcType=VARCHAR},
+                #{kor, jdbcType=INTEGER},
+                #{eng, jdbcType=INTEGER},
+                #{mat, jdbcType=INTEGER},
+                #{grade, jdbcType=INTEGER}
+			)
+		]]>
+    </insert>
+
+    <insert id="insertOneVO" parameterType="AreaVO">
+        <![CDATA[
+			insert into JDU_SALE_TBL(area_cd, region_area, prod_id, sale_cnt)
+			values(
+                #{areaCD, jdbcType=VARCHAR},
+                #{regionArea, jdbcType=VARCHAR},
+                #{prodId, jdbcType=VARCHAR},
+                #{saleCnt, jdbcType=INTEGER}
+			)
+		]]>
+    </insert>
+
+    <insert id="multiInsert" parameterType="list">
+        <foreach collection="list" item="item" open="insert all" separator=" "
+                 close="select * from dual">
+            into JDU_SALE_TBL(area_cd, region_area, prod_id, sale_cnt)
+            values(
+                #{item.areaCD, jdbcType=VARCHAR},
+                #{item.regionArea, jdbcType=VARCHAR},
+                #{item.prodId, jdbcType=VARCHAR},
+                #{item.saleCnt, jdbcType=INTEGER}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateQuery" parameterType="map">
+        update JDU_SALE_TBL
+        <trim prefix="set" prefixOverrides=",">
+            <if test="regionArea =! null">
+                ,region_area = #{regionArea}
+            </if>
+            <if test="prodId =! null">
+                ,prod_id = #{prodId}
+            </if>
+            <if test="saleCnt =! null">
+                ,sale_cnt = #{saleCnt}
+            </if>
+        </trim>
+        where area_cd = #{areaCD}
+    </update>
+
+    <delete id="delete" parameterType="String">
+        delete from JDU_SALE_TBL where area_cd = #{areaCD}
+    </delete>
+
+
+</mapper>

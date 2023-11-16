@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mono.studydb.dao.AlbumDao">
+
+<!--    <resultMap id="selectAlbumToSongCollectionMapping" type="Album">-->
+<!--        <id column="album_id" property="albumId" jdbcType="VARCHAR"/>-->
+<!--        <result column="album_seq" property="albumSeq" jdbcType="INTEGER"/>-->
+<!--        <result column="album_title" property="albumTitle" jdbcType="VARCHAR"/>-->
+<!--        <result column="open_date" property="openDate" jdbcType="VARCHAR"/>-->
+<!--        <collection property="song" javaType="List" ofType="Song">-->
+<!--            <id column="song_name" property="songName" jdbcType="VARCHAR"/>-->
+<!--            <result column="play_time" property="playTime" jdbcType="VARCHAR"/>-->
+<!--        </collection>-->
+<!--    </resultMap>-->
+
+<!--    <select id="selectAlbumToSongCollection" parameterType="String" resultMap="selectAlbumToSongCollectionMapping">-->
+<!--        <![CDATA[-->
+<!--        select a.album_id album_id-->
+<!--            , a.mst_id mst_id-->
+<!--            , a.album_seq album_seq-->
+<!--            , a.open_date open_date-->
+<!--            , b.song_name song_name-->
+<!--            , b.play_time play_time-->
+<!--        from album a, song b-->
+<!--        where a.album_id = b.album_id-->
+<!--        and a.album_id = #{albumId}-->
+<!--        ]]>-->
+<!--    </select>-->
+
+<!--    <resultMap id="selectSongToAlbumAssociationMapping" type="Song">-->
+<!--        <id column="album_id" property="albumId" jdbcType="VARCHAR"/>-->
+<!--        <id column="song_name" property="songName" jdbcType="VARCHAR"/>-->
+<!--        <result column="play_time" property="playTime" jdbcType="VARCHAR"/>-->
+<!--        <association property="album" javaType="Album">-->
+<!--            <id column="album_id" property="albumId" jdbcType="VARCHAR"/>-->
+<!--            <result column="album_seq" property="albumSeq" jdbcType="INTEGER"/>-->
+<!--            <result column="album_title" property="albumTitle" jdbcType="VARCHAR"/>-->
+<!--            <result column="open_date" property="openDate" jdbcType="VARCHAR"/>-->
+<!--        </association>-->
+<!--    </resultMap>-->
+
+<!--    <select id="selectSongToAlbumAssociation" parameterType="String" resultMap="selectSongToAlbumAssociationMapping">-->
+<!--        <![CDATA[-->
+<!--        select a.album_id album_id-->
+<!--            , a.mst_id mst_id-->
+<!--            , a.album_seq album_seq-->
+<!--            , a.open_date open_date-->
+<!--            , b.song_name song_name-->
+<!--            , b.play_time play_time-->
+<!--        from album a, song b-->
+<!--        where a.album_id = b.album_id-->
+<!--        and a.album_id = #{albumId}-->
+<!--        ]]>-->
+<!--    </select>-->
+
+<!--    <resultMap id="selectArtistToSongCollectionMapping" type="Artist">-->
+<!--        <id column="mst_id" property="mstId" jdbcType="VARCHAR"/>-->
+<!--        <result column="mst_name" property="mstName" jdbcType="VARCHAR"/>-->
+<!--        <result column="debut_date" property="debutDate" jdbcType="VARCHAR"/>-->
+<!--        <collection property="song" javaType="List" ofType="Song">-->
+<!--            <id column="song_name" property="songName" jdbcType="VARCHAR"/>-->
+<!--            <result column="play_time" property="playTime" jdbcType="VARCHAR"/>-->
+<!--        </collection>-->
+<!--    </resultMap>-->
+
+<!--    <select id="selectArtistToSongCollection" parameterType="String" resultMap="selectArtistToSongCollectionMapping">-->
+<!--        <![CDATA[-->
+<!--        select a.mst_id mst_id-->
+<!--            , a.mst_name mst_name-->
+<!--            , a.debut_date debut_date-->
+<!--            , s.song_name song_name-->
+<!--            , s.play_time play_time-->
+<!--        from artist a join album b on a.mst_id = b.mst_id-->
+<!--            join song s on b.album_id = s.album_id-->
+<!--        where a.mst_id = #{mst_id}-->
+<!--        ]]>-->
+<!--    </select>-->
+
+<!--    <resultMap id="selectSongToArtistAssociationMapping" type="Song">-->
+<!--        <id column="song_name" property="songName" jdbcType="VARCHAR"/>-->
+<!--        <result column="play_time" property="playTime" jdbcType="VARCHAR"/>-->
+<!--        <association property="artist" javaType="Artist">-->
+<!--            <id column="mst_id" property="mstId" jdbcType="VARCHAR"/>-->
+<!--            <result column="mst_name" property="mstName" jdbcType="VARCHAR"/>-->
+<!--            <result column="debut_date" property="debutDate" jdbcType="VARCHAR"/>-->
+<!--        </association>-->
+<!--    </resultMap>-->
+
+<!--    <select id="selectSongToArtistAssociation" parameterType="String" resultMap="selectSongToArtistAssociationMapping">-->
+<!--        <![CDATA[-->
+<!--        select a.mst_id mst_id-->
+<!--            , a.mst_name mst_name-->
+<!--            , a.debut_date debut_date-->
+<!--            , s.song_name song_name-->
+<!--            , s.play_time play_time-->
+<!--        from artist a join album b on a.mst_id = b.mst_id-->
+<!--            join song s on b.album_id = s.album_id-->
+<!--        where a.mst_id = #{mst_id}-->
+<!--        ]]>-->
+<!--    </select>-->
+
+    <resultMap id="selectAllMapping" type="Album">
+        <id column="album_id" property="albumId" jdbcType="VARCHAR"/>
+        <result column="album_seq" property="albumSeq" jdbcType="INTEGER"/>
+        <result column="album_title" property="albumTitle" jdbcType="VARCHAR"/>
+        <result column="open_date" property="openDate" jdbcType="VARCHAR"/>
+        <association property="artist" javaType="Artist">
+            <id column="mst_id" property="mstId" jdbcType="VARCHAR"/>
+            <result column="mst_name" property="mstName" jdbcType="VARCHAR"/>
+            <result column="debut_date" property="debutDate" jdbcType="VARCHAR"/>
+        </association>
+        <collection property="song" javaType="List" ofType="song">
+            <id column="song_name" property="songName" jdbcType="VARCHAR"/>
+            <result column="play_time" property="playTime" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectAll" parameterType="String" resultMap="selectAllMapping">
+        <![CDATA[
+        select a.mst_id mst_id
+            , a.mst_name mst_name
+            , a.debut_date debut_date
+            , s.song_name song_name
+            , s.play_time play_time
+            , b.album_id album_id
+            , b.album_title album_title
+            , b.open_date open_date
+        from artist a join album b on a.mst_id = b.mst_id
+            join song s on b.album_id = s.album_id
+        where a.mst_id = #{mst_id}
+        ]]>
+    </select>
+
+</mapper>

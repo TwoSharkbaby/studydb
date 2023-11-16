@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mono.studydb.dao.AreaSalesDao">
+    <select id="findAreaSale" parameterType="String" resultType="com.mono.studydb.model.AreaVO">
+        select area_cd
+            ,region_area
+            ,prod_id
+            ,sum(sale_cnt) sale_cnt
+        from sale_tbl
+        where area_cd = #{argCD}
+        and rownum = 1
+        group by area_cd
+            ,region_area
+            ,prod_id
+    </select>
+
+    <select id="findAreaSale2" parameterType="String" resultType="AreaVO">
+        select area_cd
+        ,region_area
+        ,prod_id
+        ,sum(sale_cnt) sale_cnt
+        from sale_tbl
+        where area_cd = #{argCD}
+        and rownum = 1
+        group by area_cd
+        ,region_area
+        ,prod_id
+    </select>
+
+    <select id="findAreaSaleMap" parameterType="String" resultType="map">
+        select area_cd
+        ,region_area
+        ,prod_id
+        ,sum(sale_cnt) sale_cnt
+        from sale_tbl
+        where area_cd = #{argCD}
+        and rownum = 1
+        group by area_cd
+        ,region_area
+        ,prod_id
+    </select>
+
+    <select id="inputMultiParam" parameterType="map" resultType="map">
+        select PRODID
+            ,PRODNM
+            ,SALECNT
+        from MSALES
+        where PRODID LIKE '%'||#{prodid}||'%'
+            and PRODNM LIKE '%'||#{prodnm}||'%'
+            and rownum = 1
+    </select>
+
+    <select id="biMultiParam" parameterType="map" resultType="map">
+        <![CDATA[
+        select PRODID
+        ,PRODNM
+        ,SALECNT
+        from MSALES
+        where PRODID LIKE '%'||#{prodid}||'%'
+        and PRODNM LIKE '%'||#{prodnm}||'%'
+        and rownum <= 3
+        ]]>
+    </select>
+</mapper>
