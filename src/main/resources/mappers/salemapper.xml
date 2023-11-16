@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mono.studydb.dao.SaleDao">
+
+    <select id="selectSaleMap" parameterType="hashmap" resultType="hashmap">
+        <![CDATA[
+        SELECT AREA_CD
+            ,CD_NM
+            ,REGION_AREA
+            ,C1||' ('||TO_CHAR(ROUND(C1*100/TOT,1),'990.0')||' %) *'||R1||' '||DECODE(R1,1,'▲')||DECODE(R1,LAST_RK,'▼') C1
+            ,C2||' ('||TO_CHAR(ROUND(C2*100/TOT,1),'990.0')||' %) *'||R2||' '||DECODE(R2,1,'▲')||DECODE(R2,LAST_RK,'▼') C2
+            ,C3||' ('||TO_CHAR(ROUND(C3*100/TOT,1),'990.0')||' %) *'||R3||' '||DECODE(R3,1,'▲')||DECODE(R3,LAST_RK,'▼') C3
+            ,C4||' ('||TO_CHAR(ROUND(C4*100/TOT,1),'990.0')||' %) *'||R4||' '||DECODE(R4,1,'▲')||DECODE(R4,LAST_RK,'▼') C4
+            ,C5||' ('||TO_CHAR(ROUND(C5*100/TOT,1),'990.0')||' %) *'||R5||' '||DECODE(R5,1,'▲')||DECODE(R5,LAST_RK,'▼') C5
+            ,C6||' ('||TO_CHAR(ROUND(C6*100/TOT,1),'990.0')||' %) *'||R6||' '||DECODE(R6,1,'▲')||DECODE(R6,LAST_RK,'▼') C6
+            ,C7||' ('||TO_CHAR(ROUND(C7*100/TOT,1),'990.0')||' %) *'||R7||' '||DECODE(R7,1,'▲')||DECODE(R7,LAST_RK,'▼') C7
+            ,C8||' ('||TO_CHAR(ROUND(C8*100/TOT,1),'990.0')||' %) *'||R8||' '||DECODE(R8,1,'▲')||DECODE(R8,LAST_RK,'▼') C8
+            ,C9||' ('||TO_CHAR(ROUND(C9*100/TOT,1),'990.0')||' %) *'||R9||' '||DECODE(R9,1,'▲')||DECODE(R9,LAST_RK,'▼') C9
+            ,TOT
+        FROM (
+            SELECT AREA_CD
+                ,DECODE(MIN(GR),'00',MIN(CD_NM),'01',MIN(CD_NM)||'합계','총계') CD_NM
+                ,REGION_AREA
+                ,NVL(SUM(DECODE(PROD_ID,'00001',SALE_CNT)),0) C1
+                ,NVL(SUM(DECODE(PROD_ID,'00002',SALE_CNT)),0) C2
+                ,NVL(SUM(DECODE(PROD_ID,'00003',SALE_CNT)),0) C3
+                ,NVL(SUM(DECODE(PROD_ID,'00004',SALE_CNT)),0) C4
+                ,NVL(SUM(DECODE(PROD_ID,'00005',SALE_CNT)),0) C5
+                ,NVL(SUM(DECODE(PROD_ID,'00006',SALE_CNT)),0) C6
+                ,NVL(SUM(DECODE(PROD_ID,'00007',SALE_CNT)),0) C7
+                ,NVL(SUM(DECODE(PROD_ID,'00008',SALE_CNT)),0) C8
+                ,NVL(SUM(DECODE(PROD_ID,'00009',SALE_CNT)),0) C9
+                ,NVL(MIN(DECODE(PROD_ID,'00001',RK)),MAX(RK)+1) R1
+                ,NVL(MIN(DECODE(PROD_ID,'00002',RK)),MAX(RK)+1) R2
+                ,NVL(MIN(DECODE(PROD_ID,'00003',RK)),MAX(RK)+1) R3
+                ,NVL(MIN(DECODE(PROD_ID,'00004',RK)),MAX(RK)+1) R4
+                ,NVL(MIN(DECODE(PROD_ID,'00005',RK)),MAX(RK)+1) R5
+                ,NVL(MIN(DECODE(PROD_ID,'00006',RK)),MAX(RK)+1) R6
+                ,NVL(MIN(DECODE(PROD_ID,'00007',RK)),MAX(RK)+1) R7
+                ,NVL(MIN(DECODE(PROD_ID,'00008',RK)),MAX(RK)+1) R8
+                ,NVL(MIN(DECODE(PROD_ID,'00009',RK)),MAX(RK)+1) R9
+                ,GREATEST(
+                    NVL(MIN(DECODE(PROD_ID,'00001',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00002',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00003',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00004',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00005',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00006',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00007',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00008',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00009',RK)),MAX(RK)+1)
+                    ) LAST_RK
+                ,SUM(SALE_CNT) TOT
+                ,MIN(GR) GR
+            FROM (
+                SELECT  AREA_CD
+                    ,CD_NM
+                    ,REGION_AREA
+                    ,PROD_ID
+                    ,DENSE_RANK() OVER(PARTITION BY AREA_CD,REGION_AREA ORDER BY SALE_CNT DESC) RK
+                    ,SALE_CNT
+                    ,GR
+                FROM (
+                    SELECT AREA_CD
+                        ,REGION_AREA
+                        ,PROD_ID
+                        ,SUM(SALE_CNT) SALE_CNT
+                        ,GROUPING(AREA_CD)||GROUPING(REGION_AREA) GR
+                    FROM SALE_TBL
+                    where 1=1
+                    ]]>
+                    <if test="row != null and row != ''">
+                        <![CDATA[
+                        and ROWNUM <= #{row}
+                        ]]>
+                    </if>
+                    <if test="areaCd != null and areaCd != ''">
+                        <![CDATA[
+                        and AREA_CD = #{areaCd}
+                        ]]>
+                    </if>
+                    <![CDATA[
+                    GROUP BY ROLLUP(AREA_CD,REGION_AREA),PROD_ID
+                    ) A, CD_TBL B
+                WHERE A.AREA_CD = B.CD_ID(+)
+                AND   LENGTH(B.CD_ID(+)) = 2
+                ]]>
+                <if test="gr != null and gr != ''">
+                    <![CDATA[
+                    AND GR = #{gr}
+                    ]]>
+                </if>
+            <![CDATA[
+            ) GROUP BY AREA_CD,REGION_AREA
+        ) ORDER BY DECODE(AREA_CD,'10',#{seq1}
+            ,'20',#{seq2}
+            ,'30',#{seq3}
+            ,'40',#{seq4}
+            ,'50',#{seq5}
+            ,'60',#{seq6}
+            ,'70',#{seq7}
+            ,'80',#{seq8}
+            ,'90',#{seq9} )
+            ,GR*DECODE(#{dir},'F',1,-1)
+        ]]>
+    </select>
+
+    <select id="selectSaleVO" parameterType="saleDTO" resultType="saleVO">
+        <![CDATA[
+        SELECT AREA_CD
+            ,CD_NM
+            ,REGION_AREA
+            ,C1||' ('||TO_CHAR(ROUND(C1*100/TOT,1),'990.0')||' %) *'||R1||' '||DECODE(R1,1,'▲')||DECODE(R1,LAST_RK,'▼') C1
+            ,C2||' ('||TO_CHAR(ROUND(C2*100/TOT,1),'990.0')||' %) *'||R2||' '||DECODE(R2,1,'▲')||DECODE(R2,LAST_RK,'▼') C2
+            ,C3||' ('||TO_CHAR(ROUND(C3*100/TOT,1),'990.0')||' %) *'||R3||' '||DECODE(R3,1,'▲')||DECODE(R3,LAST_RK,'▼') C3
+            ,C4||' ('||TO_CHAR(ROUND(C4*100/TOT,1),'990.0')||' %) *'||R4||' '||DECODE(R4,1,'▲')||DECODE(R4,LAST_RK,'▼') C4
+            ,C5||' ('||TO_CHAR(ROUND(C5*100/TOT,1),'990.0')||' %) *'||R5||' '||DECODE(R5,1,'▲')||DECODE(R5,LAST_RK,'▼') C5
+            ,C6||' ('||TO_CHAR(ROUND(C6*100/TOT,1),'990.0')||' %) *'||R6||' '||DECODE(R6,1,'▲')||DECODE(R6,LAST_RK,'▼') C6
+            ,C7||' ('||TO_CHAR(ROUND(C7*100/TOT,1),'990.0')||' %) *'||R7||' '||DECODE(R7,1,'▲')||DECODE(R7,LAST_RK,'▼') C7
+            ,C8||' ('||TO_CHAR(ROUND(C8*100/TOT,1),'990.0')||' %) *'||R8||' '||DECODE(R8,1,'▲')||DECODE(R8,LAST_RK,'▼') C8
+            ,C9||' ('||TO_CHAR(ROUND(C9*100/TOT,1),'990.0')||' %) *'||R9||' '||DECODE(R9,1,'▲')||DECODE(R9,LAST_RK,'▼') C9
+            ,TOT
+        FROM (
+            SELECT AREA_CD
+                ,DECODE(MIN(GR),'00',MIN(CD_NM),'01',MIN(CD_NM)||'합계','총계') CD_NM
+                ,REGION_AREA
+                ,NVL(SUM(DECODE(PROD_ID,'00001',SALE_CNT)),0) C1
+                ,NVL(SUM(DECODE(PROD_ID,'00002',SALE_CNT)),0) C2
+                ,NVL(SUM(DECODE(PROD_ID,'00003',SALE_CNT)),0) C3
+                ,NVL(SUM(DECODE(PROD_ID,'00004',SALE_CNT)),0) C4
+                ,NVL(SUM(DECODE(PROD_ID,'00005',SALE_CNT)),0) C5
+                ,NVL(SUM(DECODE(PROD_ID,'00006',SALE_CNT)),0) C6
+                ,NVL(SUM(DECODE(PROD_ID,'00007',SALE_CNT)),0) C7
+                ,NVL(SUM(DECODE(PROD_ID,'00008',SALE_CNT)),0) C8
+                ,NVL(SUM(DECODE(PROD_ID,'00009',SALE_CNT)),0) C9
+                ,NVL(MIN(DECODE(PROD_ID,'00001',RK)),MAX(RK)+1) R1
+                ,NVL(MIN(DECODE(PROD_ID,'00002',RK)),MAX(RK)+1) R2
+                ,NVL(MIN(DECODE(PROD_ID,'00003',RK)),MAX(RK)+1) R3
+                ,NVL(MIN(DECODE(PROD_ID,'00004',RK)),MAX(RK)+1) R4
+                ,NVL(MIN(DECODE(PROD_ID,'00005',RK)),MAX(RK)+1) R5
+                ,NVL(MIN(DECODE(PROD_ID,'00006',RK)),MAX(RK)+1) R6
+                ,NVL(MIN(DECODE(PROD_ID,'00007',RK)),MAX(RK)+1) R7
+                ,NVL(MIN(DECODE(PROD_ID,'00008',RK)),MAX(RK)+1) R8
+                ,NVL(MIN(DECODE(PROD_ID,'00009',RK)),MAX(RK)+1) R9
+                ,GREATEST(
+                    NVL(MIN(DECODE(PROD_ID,'00001',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00002',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00003',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00004',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00005',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00006',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00007',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00008',RK)),MAX(RK)+1)
+                    ,NVL(MIN(DECODE(PROD_ID,'00009',RK)),MAX(RK)+1)
+                    ) LAST_RK
+                ,SUM(SALE_CNT) TOT
+                ,MIN(GR) GR
+            FROM (
+                SELECT  AREA_CD
+                    ,CD_NM
+                    ,REGION_AREA
+                    ,PROD_ID
+                    ,DENSE_RANK() OVER(PARTITION BY AREA_CD,REGION_AREA ORDER BY SALE_CNT DESC) RK
+                    ,SALE_CNT
+                    ,GR
+                FROM (
+                    SELECT AREA_CD
+                        ,REGION_AREA
+                        ,PROD_ID
+                        ,SUM(SALE_CNT) SALE_CNT
+                        ,GROUPING(AREA_CD)||GROUPING(REGION_AREA) GR
+                    FROM SALE_TBL
+                    where 1=1
+                    ]]>
+        <if test="row != null and row != ''">
+            <![CDATA[
+                        and ROWNUM <= #{row}
+                        ]]>
+        </if>
+        <if test="areaCd != null and areaCd != ''">
+            <![CDATA[
+                        and AREA_CD = #{areaCd}
+                        ]]>
+        </if>
+        <![CDATA[
+                    GROUP BY ROLLUP(AREA_CD,REGION_AREA),PROD_ID
+                    ) A, CD_TBL B
+                WHERE A.AREA_CD = B.CD_ID(+)
+                AND   LENGTH(B.CD_ID(+)) = 2
+                ]]>
+        <if test="gr != null and gr != ''">
+            <![CDATA[
+                    AND GR = #{gr}
+                    ]]>
+        </if>
+        <![CDATA[
+            ) GROUP BY AREA_CD,REGION_AREA
+        ) ORDER BY DECODE(AREA_CD,'10',#{seq1}
+            ,'20',#{seq2}
+            ,'30',#{seq3}
+            ,'40',#{seq4}
+            ,'50',#{seq5}
+            ,'60',#{seq6}
+            ,'70',#{seq7}
+            ,'80',#{seq8}
+            ,'90',#{seq9} )
+            ,GR*DECODE(#{dir},'F',1,-1)
+        ]]>
+    </select>
+
+
+</mapper>
