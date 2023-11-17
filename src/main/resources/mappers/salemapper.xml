@@ -4,10 +4,9 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mono.studydb.dao.SaleDao">
 
-    <select id="selectSaleMap" parameterType="hashmap" resultType="hashmap">
+    <select id="selectSaleMap" parameterType="saleDTO" resultType="hashmap">
         <![CDATA[
-        SELECT AREA_CD
-            ,CD_NM
+        SELECT CD_NM
             ,REGION_AREA
             ,C1||' ('||TO_CHAR(ROUND(C1*100/TOT,1),'990.0')||' %) *'||R1||' '||DECODE(R1,1,'▲')||DECODE(R1,LAST_RK,'▼') C1
             ,C2||' ('||TO_CHAR(ROUND(C2*100/TOT,1),'990.0')||' %) *'||R2||' '||DECODE(R2,1,'▲')||DECODE(R2,LAST_RK,'▼') C2
@@ -71,28 +70,28 @@
                     FROM SALE_TBL
                     where 1=1
                     ]]>
-                    <if test="row != null and row != ''">
-                        <![CDATA[
+        <if test="row != null and row != ''">
+            <![CDATA[
                         and ROWNUM <= #{row}
                         ]]>
-                    </if>
-                    <if test="areaCd != null and areaCd != ''">
-                        <![CDATA[
+        </if>
+        <if test="areaCd != null and areaCd != ''">
+            <![CDATA[
                         and AREA_CD = #{areaCd}
                         ]]>
-                    </if>
-                    <![CDATA[
+        </if>
+        <![CDATA[
                     GROUP BY ROLLUP(AREA_CD,REGION_AREA),PROD_ID
                     ) A, CD_TBL B
                 WHERE A.AREA_CD = B.CD_ID(+)
                 AND   LENGTH(B.CD_ID(+)) = 2
                 ]]>
-                <if test="gr != null and gr != ''">
-                    <![CDATA[
+        <if test="gr != null and gr != ''">
+            <![CDATA[
                     AND GR = #{gr}
                     ]]>
-                </if>
-            <![CDATA[
+        </if>
+        <![CDATA[
             ) GROUP BY AREA_CD,REGION_AREA
         ) ORDER BY DECODE(AREA_CD,'10',#{seq1}
             ,'20',#{seq2}
@@ -109,8 +108,7 @@
 
     <select id="selectSaleVO" parameterType="saleDTO" resultType="saleVO">
         <![CDATA[
-        SELECT AREA_CD
-            ,CD_NM
+        SELECT CD_NM
             ,REGION_AREA
             ,C1||' ('||TO_CHAR(ROUND(C1*100/TOT,1),'990.0')||' %) *'||R1||' '||DECODE(R1,1,'▲')||DECODE(R1,LAST_RK,'▼') C1
             ,C2||' ('||TO_CHAR(ROUND(C2*100/TOT,1),'990.0')||' %) *'||R2||' '||DECODE(R2,1,'▲')||DECODE(R2,LAST_RK,'▼') C2

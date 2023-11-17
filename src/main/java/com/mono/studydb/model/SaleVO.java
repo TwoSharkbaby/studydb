@@ -10,7 +10,6 @@ import lombok.*;
 @Builder
 public class SaleVO {
 
-    private String areaCd;
     private String cdNm;
     private String regionArea;
     private String c1;

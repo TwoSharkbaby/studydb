@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/header::header"></head>
+<body>
+<div th:replace="layout/top::top"></div>
+
+<div class="container text-center mt-5">
+    <form th:action="@{/map}" method="get">
+        <div class="row">
+            <div class="col-2">
+                <div class="tt">
+                    <h5>도시명</h5>
+                </div>
+                <div>
+                    <select class="form-select" id="areaCd" name="areaCd" style="text-align: center;">
+                        <option value="" selected>전체</option>
+                        <option value="10">서울</option>
+                        <option value="20">부산</option>
+                        <option value="30">광주</option>
+                        <option value="40">대전</option>
+                        <option value="50">평택</option>
+                        <option value="60">인천</option>
+                        <option value="70">아산</option>
+                        <option value="80">안양</option>
+                        <option value="90">강원</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="radio-group">
+                    <input class="ms-3" type="radio" id="gr00" name="gr" value="00">
+                    <label class="me-4" for="gr00">DATA</label>
+
+                    <input type="radio" id="gr01" name="gr" value="01">
+                    <label class="me-4" for="gr01">중간총계</label>
+
+                    <input type="radio" id="gr11" name="gr" value="11">
+                    <label class="me-4" for="gr11">총계</label>
+
+                    <input type="radio" id="gr" name="gr" value="" checked>
+                    <label class="me-4" for="gr">전체</label>
+                </div>
+                <div class="input-group">
+                    <div>
+                        <label for="seq1">서울</label>
+                        <input type="text" id="seq1" name="seq1" th:value="${saleDTO.seq1}" value="1">
+                        <label for="seq1">부산</label>
+                        <input type="text" id="seq2" name="seq2" th:value="${saleDTO.seq2}" value="2">
+                        <label for="seq1">광주</label>
+                        <input type="text" id="seq3" name="seq3" th:value="${saleDTO.seq3}" value="3">
+                        <label for="seq1">대전</label>
+                        <input type="text" id="seq4" name="seq4" th:value="${saleDTO.seq4}" value="4">
+                        <label for="seq1">강원</label>
+                        <input type="text" id="seq5" name="seq5" th:value="${saleDTO.seq5}" value="5">
+                    </div>
+                    <div class="mt-3">
+                        <label for="seq1">평택</label>
+                        <input type="text" id="seq6" name="seq6" th:value="${saleDTO.seq6}" value="6">
+                        <label for="seq1">인천</label>
+                        <input type="text" id="seq7" name="seq7" th:value="${saleDTO.seq7}" value="7">
+                        <label for="seq1">아산</label>
+                        <input type="text" id="seq8" name="seq8" th:value="${saleDTO.seq8}" value="8">
+                        <label for="seq1">안양</label>
+                        <input type="text" id="seq9" name="seq9" th:value="${saleDTO.seq9}" value="9">
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="radio-group">
+                    <div>
+                        <input class="ms-3" type="radio" id="dir1" name="dir" value="F">
+                        <label class="me-3" for="dir1">DATA 우선</label>
+                    </div>
+                    <div class="mt-2">
+                        <input class="ms-3" type="radio" id="dir2" name="dir" value="" checked>
+                        <label class="aa" for="dir2">총계 우선</label>
+                    </div>
+                </div>
+                <div class="input-group2 mt-3">
+                    <label for="row">건수</label>
+                    <input type="text" id="row" name="row" th:value="${saleDTO.row}">
+                </div>
+            </div>
+            <div class="col-2">
+                <a class="btn btn-warning" href="#" th:href="@{/home}">VO로</a>
+                <button class="btn btn-primary btn-lg">검색</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="container mt-4">
+    <table class="table table-bordered">
+        <thead class="fs-5 bg-secondary fw-bold text-center">
+        <td>NM</td>
+        <td>REGION</td>
+        <td>안마기</td>
+        <td>냉장고</td>
+        <td>TV</td>
+        <td>세탁기</td>
+        <td>김치냉장고</td>
+        <!--            <td>오디오</td>-->
+        <!--    <td>청소기</td>-->
+        <!--    <td>전자렌지</td>-->
+        <!--    <td>가스렌지</td>-->
+        <!--    <td>스팀다리미</td>-->
+        <td>합계</td>
+        </thead>
+        <tbody th:each="result : ${result}"
+               th:class="${result.containsKey('REGION_AREA')} ? '' : 'null-value-row'">
+        <td th:text="${result.CD_NM}" class="text-center"></td>
+        <td th:if="${result.containsKey('REGION_AREA')}" th:text="${result.REGION_AREA}" class="text-center"></td>
+        <td th:unless="${result.containsKey('REGION_AREA')}"></td>
+        <td th:style="${result.C1 != null && result.C1.contains('▲') ? 'color: red;' : (result.C1 != null && result.C1.contains('▼') ? 'color: blue;' : '')}" class="text-end" th:text="${result.C1}"></td>
+        <td th:style="${result.C2 != null && result.C2.contains('▲') ? 'color: red;' : (result.C2 != null && result.C2.contains('▼') ? 'color: blue;' : '')}" class="text-end" th:text="${result.C2}"></td>
+        <td th:style="${result.C3 != null && result.C3.contains('▲') ? 'color: red;' : (result.C3 != null && result.C3.contains('▼') ? 'color: blue;' : '')}" class="text-end" th:text="${result.C3}"></td>
+        <td th:style="${result.C4 != null && result.C4.contains('▲') ? 'color: red;' : (result.C4 != null && result.C4.contains('▼') ? 'color: blue;' : '')}" class="text-end" th:text="${result.C4}"></td>
+        <td th:style="${result.C5 != null && result.C5.contains('▲') ? 'color: red;' : (result.C5 != null && result.C5.contains('▼') ? 'color: blue;' : '')}" class="text-end" th:text="${result.C5}"></td>
+        <td th:text="${result.TOT}" class="text-end"></td>
+        </tbody>
+    </table>
+</div>
+
+<script th:inline="javascript">
+
+    var dirValue = [[${saleDTO.dir}]];
+
+    if (dirValue == "F") {
+        document.getElementById("dir1").checked = true;
+        document.getElementById("dir2").checked = false;
+    } else {
+        document.getElementById("dir1").checked = false;
+        document.getElementById("dir2").checked = true;
+    }
+
+    var grValue = [[${saleDTO.gr}]];
+
+    if (grValue == "00") {
+        document.getElementById("gr00").checked = true;
+        document.getElementById("gr01").checked = false;
+        document.getElementById("gr11").checked = false;
+        document.getElementById("gr").checked = false;
+    } else if(grValue == "01") {
+        document.getElementById("gr00").checked = false;
+        document.getElementById("gr01").checked = true;
+        document.getElementById("gr11").checked = false;
+        document.getElementById("gr").checked = false;
+    } else if(grValue == "11") {
+        document.getElementById("gr00").checked = false;
+        document.getElementById("gr01").checked = false;
+        document.getElementById("gr11").checked = true;
+        document.getElementById("gr").checked = false;
+    } else {
+        document.getElementById("gr00").checked = false;
+        document.getElementById("gr01").checked = false;
+        document.getElementById("gr11").checked = false;
+        document.getElementById("gr").checked = true;
+    }
+
+    var selectedValue = [[${saleDTO.areaCd}]];
+
+    var selectElement = document.getElementById("areaCd");
+
+    for (var i = 0; i < selectElement.options.length; i++) {
+        if (selectElement.options[i].value === selectedValue) {
+            selectElement.options[i].selected = true;
+            break;
+        }
+    }
+
+</script>
+
+<div th:replace="layout/footer::footer"></div>
+</body>
+</html>

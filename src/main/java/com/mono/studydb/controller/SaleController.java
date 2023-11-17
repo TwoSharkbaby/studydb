@@ -6,6 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -13,19 +17,19 @@ public class SaleController {
 
     private final SaleDao saleDao;
 
-    @GetMapping("home")
-    public String home(SaleDTO saleDTO, Model model){
-        saleDTO.setSeq1(2);
-        saleDTO.setSeq1(3);
-        saleDTO.setSeq1(4);
-        saleDTO.setSeq1(5);
-        saleDTO.setSeq1(6);
-        saleDTO.setSeq1(7);
-        saleDTO.setSeq1(8);
-        saleDTO.setSeq1(9);
-        saleDTO.setSeq1(1);
-        saleDTO.setDir("F");
+    @GetMapping("/home")
+    public String home(@ModelAttribute SaleDTO saleDTO, Model model){
+        System.out.println("saleDTO = " + saleDTO);
         model.addAttribute("result", saleDao.selectSaleVO(saleDTO));
         return "home";
+    }
+
+    @GetMapping("/map")
+    public String map(@ModelAttribute SaleDTO saleDTO, Model model){
+        System.out.println("mapDTO = " + saleDTO);
+        List<Map<String, Object>> result =  saleDao.selectSaleMap(saleDTO);
+        result.forEach(System.out::println);
+        model.addAttribute("result", result);
+        return "map";
     }
 }

@@ -10,7 +10,7 @@ import java.util.Map;
 @Mapper
 public interface SaleDao {
 
-    List<Map<String, Object>> selectSaleMap(Map<String, Object> param);
+    List<Map<String, Object>> selectSaleMap(SaleDTO saleDTO);
 
     List<SaleVO> selectSaleVO(SaleDTO saleDTO);
 }
